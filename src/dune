@@ -1,2 +1,4 @@
 (library
-  (name niwo))
+  (name niwo)
+  (modules niwo foltl formula_parser)
+  (libraries re core core_unix angstrom))

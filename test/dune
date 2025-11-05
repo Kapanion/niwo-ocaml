@@ -1,0 +1,5 @@
+(library
+  (name test_niwo)
+  (libraries niwo)
+  (inline_tests)
+  (preprocess (pps ppx_expect)))

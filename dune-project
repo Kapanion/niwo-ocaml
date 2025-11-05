@@ -1,0 +1,7 @@
+(lang dune 3.7)
+(name niwo-ocaml)
+(generate_opam_files false)
+(authors "Your Name")
+(maintainers "Your Email")
+(license MIT)
+(source (github username/niwo-ocaml))

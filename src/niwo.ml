@@ -1,13 +1,19 @@
+open! Core
+
+(* Re-export modules for convenience *)
+module Foltl = Foltl
+module Formula_parser = Formula_parser
+
 let count_lines filename =
-  let ic = open_in filename in
+  let ic = In_channel.create filename in
   let rec aux acc =
     try
-      let _ = input_line ic in
+      let _ = In_channel.input_line ic in
       aux (acc + 1)
     with End_of_file -> acc
   in
   let result = aux 0 in
-  close_in ic;
+  In_channel.close ic;
   result
 
 let process_file filename =

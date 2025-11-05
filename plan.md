@@ -915,11 +915,26 @@ Note: `test.txt` is kept in the repository as a manually editable test file for 
 
 ## Updated Implementation Order
 
-1. **Phase 1**: Core type definition and basic constructors
+1. **Phase 1**: Core type definition and basic constructors ✅ COMPLETED
    - Define `var` and `formula` types in `foltl.ml` and `foltl.mli`
    - Implement `mk_var`, `mk_fun`, basic binary operators
    - Implement `to_string` function
    - Write basic tests in `test/test_foltl.ml`
+
+2. **Phase 2**: Smart constructors for lists ✅ COMPLETED
+   - Implement `mk_and_list`, `mk_or_list`, etc.
+   - Handle edge cases (empty lists, True/False)
+   - Write tests for list constructors
+
+3. **Phase 3**: String conversion and encoding ✅ COMPLETED
+   - Implement `to_typed_string`, `pretty_print`
+   - Implement Fun encoding/decoding functions
+   - Write comprehensive string conversion tests
+
+4. **Phase 4**: Analysis functions 🔄 IN PROGRESS
+   - Implement `free_vars`, `bound_vars`, `opsize`
+   - Implement predicate functions (`is_qfree`, `is_universal`, `is_bs`)
+   - Write tests for all analysis functions
 
 2. **Phase 2**: Smart constructors for lists
    - Implement `mk_and_list`, `mk_or_list`, etc.

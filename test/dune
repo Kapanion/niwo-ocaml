@@ -1,6 +1,7 @@
 (library
-  (name test_niwo)
-  (modules test_niwo test_foltl test_parser)
-  (libraries niwo core core_unix)
-  (inline_tests)
-  (preprocess (pps ppx_expect)))
+ (name test_niwo)
+ (modules test_niwo test_formula test_parser)
+ (libraries niwo core core_unix)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect)))

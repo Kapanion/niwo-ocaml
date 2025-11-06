@@ -1,5 +1,7 @@
+open! Core
+
 (* Re-export formula modules *)
-module Foltl = Foltl
+module Formula = Formula
 module Formula_parser = Formula_parser
 
 val count_lines : string -> int

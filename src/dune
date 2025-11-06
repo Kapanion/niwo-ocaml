@@ -1,4 +1,6 @@
 (library
-  (name niwo)
-  (modules niwo foltl formula_parser)
-  (libraries re core core_unix angstrom))
+ (name niwo)
+ (modules niwo formula formula_parser)
+ (libraries re core core_unix angstrom)
+ (preprocess
+  (pps ppx_sexp_conv)))

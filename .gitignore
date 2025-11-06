@@ -2,4 +2,3 @@ _build/
 _llm/
 *.install
 *.merlin
-.ocamlformat

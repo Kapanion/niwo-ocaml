@@ -17,17 +17,20 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: 5.1.x
+          opam-depext: false
       
       - name: Install OCamlformat
-        run: opam install ocamlformat
+        run: |
+          eval $(opam env)
+          opam install ocamlformat -y
       
       - name: Check .ocamlformat exists
         run: |
-          if [ ! -f niwo-ocaml/.ocamlformat ]; then
-            echo "::error::.ocamlformat file not found in niwo-ocaml/"
+          if [ ! -f .ocamlformat ]; then
+            echo "::error::.ocamlformat file not found"
             exit 1
           fi
-          if ! grep -q "profile = janestreet" niwo-ocaml/.ocamlformat; then
+          if ! grep -q "profile = janestreet" .ocamlformat; then
             echo "::error::.ocamlformat must contain 'profile = janestreet'"
             exit 1
           fi
@@ -42,5 +45,5 @@ jobs:
         if: failure()
         run: |
           echo "::error::Code is not formatted with ocamlformat (janestreet profile)"
-          echo "To fix, run from niwo-ocaml/:"
+          echo "To fix, run:"
           echo "  find . -name '*.ml' -o -name '*.mli' | grep -v '_build' | xargs ocamlformat --inplace --profile=janestreet"

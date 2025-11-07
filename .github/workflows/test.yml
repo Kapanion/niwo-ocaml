@@ -1,0 +1,47 @@
+name: Run Tests
+
+on:
+  pull_request:
+    paths:
+      - '**.ml'
+      - '**.mli'
+      - 'dune'
+      - 'dune-project'
+      - '**.opam'
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 5.1.x
+          opam-depext: false
+          opam-disable-sandboxing: true
+      
+      - name: Install dependencies
+        run: |
+          eval $(opam env)
+          opam install . --deps-only --with-test -y
+      
+      - name: Build project
+        run: |
+          eval $(opam env)
+          dune build
+      
+      - name: Run tests
+        run: |
+          eval $(opam env)
+          dune test
+      
+      - name: Tests failed
+        if: failure()
+        run: |
+          echo "::error::Tests failed. Please fix the failing tests before merging."

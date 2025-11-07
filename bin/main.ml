@@ -3,11 +3,9 @@ open! Core
 let usage () =
   let argv = Sys.get_argv () in
   Printf.eprintf "Usage:\n";
-  Printf.eprintf "  %s <formula_file>           Parse formula from file\n" argv.(0);
   Printf.eprintf
     "  %s --string <formula>       Parse formula from command line\n"
     argv.(0);
-  Printf.eprintf "  %s --count <file>           Count lines in file (legacy)\n" argv.(0);
   exit 1
 ;;
 
@@ -49,15 +47,5 @@ let () =
      | Error msg ->
        Printf.eprintf "Parse error: %s\n" msg;
        exit 1)
-  | "--count" ->
-    if Array.length argv < 3
-    then (
-      Printf.eprintf "Error: --count requires a filename\n";
-      usage ());
-    let filename = argv.(2) in
-    Niwo.process_file filename
-  | filename ->
-    (* Default: treat argument as a formula file *)
-    (* For now, just count lines - we'll implement formula file processing later *)
-    Niwo.process_file filename
+  | _ -> usage ()
 ;;

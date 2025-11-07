@@ -39,7 +39,10 @@ jobs:
       - name: Check formatting
         run: |
           eval $(opam env)
-          find . -name "*.ml" -o -name "*.mli" | grep -v "_build" | \
+          find . -type f \( -name "*.ml" -o -name "*.mli" \) \
+            -not -path "./_opam/*" \
+            -not -path "./_build/*" \
+            -not -path "./.*" | \
             xargs ocamlformat --check --profile=janestreet
       
       - name: Formatting issues found
@@ -47,4 +50,4 @@ jobs:
         run: |
           echo "::error::Code is not formatted with ocamlformat (janestreet profile)"
           echo "To fix, run:"
-          echo "  find . -name '*.ml' -o -name '*.mli' | grep -v '_build' | xargs ocamlformat --inplace --profile=janestreet"
+          echo "  find . -type f \( -name '*.ml' -o -name '*.mli' \) -not -path './_opam/*' -not -path './_build/*' | xargs ocamlformat --inplace --profile=janestreet"

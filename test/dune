@@ -1,7 +1,7 @@
 (library
  (name test_niwo)
  (modules test_formula test_formula_parser)
- (libraries niwo core core_unix)
+ (libraries niwo core)
  (inline_tests)
  (preprocess
   (pps ppx_expect)))

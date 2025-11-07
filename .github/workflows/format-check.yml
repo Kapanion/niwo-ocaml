@@ -9,7 +9,7 @@ on:
 
 jobs:
   format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       
@@ -18,6 +18,7 @@ jobs:
         with:
           ocaml-compiler: 5.1.x
           opam-depext: false
+          opam-disable-sandboxing: true
       
       - name: Install OCamlformat
         run: |

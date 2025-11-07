@@ -35,7 +35,6 @@ jobs:
       - name: Check formatting
         run: |
           eval $(opam env)
-          cd niwo-ocaml
           find . -name "*.ml" -o -name "*.mli" | grep -v "_build" | \
             xargs ocamlformat --check --profile=janestreet
       

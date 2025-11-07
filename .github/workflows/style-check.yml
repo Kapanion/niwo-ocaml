@@ -13,7 +13,6 @@ jobs:
       
       - name: Check for 'open Core' in all .ml files
         run: |
-          cd niwo-ocaml
           failed=0
           for file in $(find . -name "*.ml" -not -path "./_build/*"); do
             if ! grep -q "^open! Core$\|^open Core$" "$file"; then

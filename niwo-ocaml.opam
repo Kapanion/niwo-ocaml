@@ -8,6 +8,5 @@ depends: [
   "dune" {>= "3.7"}
   "core"
   "ppx_expect" {with-test}
-  "re" {>= "1.10.0"}      (* for regex in decoding *)
-  "angstrom" {>= "0.15.0"} (* for parser combinators *)
+  "angstrom" {>= "0.15.0"}
 ]

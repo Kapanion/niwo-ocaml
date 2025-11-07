@@ -32,7 +32,8 @@ let ident : string Angstrom.t =
 ;;
 
 (* Variables *)
-let var : var Angstrom.t = ident >>= fun name -> return (mk_var name)
+(* var is not used anywhere in code, but the parser needs it, so we suppress the warning. *)
+let var : var Angstrom.t = ident >>= fun name -> return (mk_var name) [@@warning "-32"]
 
 let typed_var : var Angstrom.t =
   ident

@@ -62,17 +62,12 @@ val mk_equal_list : t list -> t
 (* String conversion *)
 val var_to_string : ?annotate:bool -> var -> string
 val to_string : ?annotate:bool -> t -> string
-val pretty_print : ?indent:int -> t -> string
 
 (* Fun-specific utilities *)
 val is_oracle : string -> bool
 val is_const_input : string -> bool
 val is_aux : string -> bool
 val is_b : string -> bool
-val encode_fun_to_var : t -> var
-val encode_fun_name : t -> string
-val decode_var_to_fun : string -> t option
-val decode_fun_name : string -> (string * string option) option
 
 (* Analysis functions *)
 val free_vars : t -> var list

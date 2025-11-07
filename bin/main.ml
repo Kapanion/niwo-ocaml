@@ -27,8 +27,6 @@ let () =
        Printf.printf "%s\n" (Niwo.Formula.to_string formula);
        Printf.printf "\n--- With Types ---\n";
        Printf.printf "%s\n" (Niwo.Formula.to_string ~annotate:true formula);
-       Printf.printf "\n--- Pretty Print ---\n";
-       Printf.printf "%s\n" (Niwo.Formula.pretty_print formula);
        Printf.printf "\n--- Analysis ---\n";
        Printf.printf
          "Free vars: %s\n"

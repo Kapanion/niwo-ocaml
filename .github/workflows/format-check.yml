@@ -1,0 +1,47 @@
+name: Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**.ml'
+      - '**.mli'
+      - '.ocamlformat'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 5.1.x
+      
+      - name: Install OCamlformat
+        run: opam install ocamlformat
+      
+      - name: Check .ocamlformat exists
+        run: |
+          if [ ! -f niwo-ocaml/.ocamlformat ]; then
+            echo "::error::.ocamlformat file not found in niwo-ocaml/"
+            exit 1
+          fi
+          if ! grep -q "profile = janestreet" niwo-ocaml/.ocamlformat; then
+            echo "::error::.ocamlformat must contain 'profile = janestreet'"
+            exit 1
+          fi
+      
+      - name: Check formatting
+        run: |
+          eval $(opam env)
+          cd niwo-ocaml
+          find . -name "*.ml" -o -name "*.mli" | grep -v "_build" | \
+            xargs ocamlformat --check --profile=janestreet
+      
+      - name: Formatting issues found
+        if: failure()
+        run: |
+          echo "::error::Code is not formatted with ocamlformat (janestreet profile)"
+          echo "To fix, run from niwo-ocaml/:"
+          echo "  find . -name '*.ml' -o -name '*.mli' | grep -v '_build' | xargs ocamlformat --inplace --profile=janestreet"

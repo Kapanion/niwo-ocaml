@@ -10,7 +10,7 @@ This document outlines the core principles and coding standards that must be res
 - Use `ocamlformat` with the `--profile=janestreet` option
 - Maximum line length: **90 characters**
 - Formatting is enforced automatically and must be applied before committing code
-- Create a `.ocamlformat` file in the project root with:
+- Have the `.ocamlformat` file in the project root with:
   ```
   profile = janestreet
   ```
@@ -47,7 +47,6 @@ This project follows the [Jane Street Style Guide](https://opensource.janestreet
 
 Example:
 ```ocaml
-(* In file formula.ml *)
 type t = 
   | And of t * t
   | Or of t * t
@@ -55,7 +54,7 @@ type t =
   | Atom of string
 ```
 
-This follows OCaml best practices and allows for clean type references like `Formula.t`, `Parser.t`, etc.
+This follows OCaml best practices and allows for clean type references like `Formula.t`, `Formula_parser.t`, etc.
 
 ### 3. Function Parameter Ordering
 **All functions must follow this strict parameter order:**
@@ -71,13 +70,6 @@ let function_name ?optional1 ?optional2 t ~labeled1 ~labeled2 positional1 positi
 3. **Labeled parameters** (`~labeled1`, `~labeled2`) follow
 4. **Positional parameters** come last
 
-**Example:**
-```ocaml
-let process_formula ?debug ?verbose formula ~mode ~output_format input_string limit =
-  (* formula has type t *)
-  (* implementation *)
-```
-
 ## Why These Rules Matter
 
 - **Open Core**: Ensures consistent use of Core's enhanced data structures and functions
@@ -90,18 +82,12 @@ let process_formula ?debug ?verbose formula ~mode ~output_format input_string li
 ## Enforcement
 
 When reviewing code or making changes:
-1. ✅ Run `ocamlformat --profile=janestreet` on all modified files
+1. ✅ Run `ocamlformat --profile=janestreet` on all modified files. Ideally, set up your editor to automatically format files
 2. ✅ Check that `open Core` is present at the top of each module
 3. ✅ Verify the primary type is named `t`
 4. ✅ Ensure function parameters follow the ordering: `?optional* t ~labeled* positional*`
 5. ✅ Verify maximum line length is 90 characters
 6. ✅ Check that exception-raising functions are suffixed with `_exn`
-
-**Before committing:**
-```bash
-# Format all OCaml files
-find . -name "*.ml" -o -name "*.mli" | xargs ocamlformat --inplace --profile=janestreet
-```
 
 These guidelines are non-negotiable and must be followed in all new code and refactoring efforts.
 

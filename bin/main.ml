@@ -45,7 +45,7 @@ let () =
        Printf.printf "Universal: %b\n" (Niwo.Formula.is_universal formula);
        Printf.printf "Bernays-Schönfinkel: %b\n" (Niwo.Formula.is_bs formula)
      | Error msg ->
-       Printf.eprintf "Parse error: %s\n" msg;
+       Printf.eprintf "Parse error: %s\n" (Error.to_string_hum msg);
        exit 1)
   | _ -> usage ()
 ;;

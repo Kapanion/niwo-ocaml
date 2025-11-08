@@ -2,8 +2,6 @@ open! Core
 open Angstrom
 open Formula
 
-type formula = Formula.t
-
 (* Whitespace handling *)
 let whitespace =
   skip_while (function
@@ -201,16 +199,8 @@ let () =
        equiv_level)
 ;;
 
-(* Main parsing function *)
-let parse_formula (s : string) : (formula, string) result =
-  match parse_string ~consume:All !term s with
-  | Ok formula -> Ok formula
-  | Error msg -> Error msg
+let parse_formula s =
+  parse_string ~consume:All !term s |> Result.map_error ~f:Error.of_string
 ;;
 
-(* Convenience function that raises exception on error *)
-let parse_formula_exn (s : string) : formula =
-  match parse_formula s with
-  | Ok f -> f
-  | Error msg -> failwith ("Parse error: " ^ msg)
-;;
+let parse_formula_exn s = parse_formula s |> Or_error.ok_exn

@@ -1,5 +1,5 @@
 (lang dune 3.7)
-(name niwo-ocaml)
+(name niwo)
 (generate_opam_files false)
 (authors "Ioane Kapanadze")
 (maintainers "ioane20002@gmail.com")

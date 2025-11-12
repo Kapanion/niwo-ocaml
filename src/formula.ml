@@ -32,22 +32,14 @@ type t =
 [@@deriving sexp_of]
 
 let equal = Poly.equal
-
-(* Variable constructor with default type *)
 let mk_var ?(typ = "T") name = { name; typ }
-
-(* Function constructor with simplified signature *)
 let mk_fun name params = Fun (name, None, params)
 let mk_fun_indexed name index params = Fun (name, Some index, params)
-
-(* Basic binary operators *)
 let mk_and t1 t2 = And (t1, t2)
 let mk_or t1 t2 = Or (t1, t2)
 let mk_implies t1 t2 = Implies (t1, t2)
 let mk_equiv t1 t2 = Equiv (t1, t2)
 let mk_equal t1 t2 = Equal (t1, t2)
-
-(* Unary operators *)
 let mk_neg t = Neg t
 let mk_next t = Next t
 let mk_globally t = Globally t
@@ -55,7 +47,6 @@ let mk_finally t = Finally t
 let mk_until t1 t2 = Until (t1, t2)
 let mk_wuntil t1 t2 = WUntil (t1, t2)
 
-(* Quantifier constructors that handle empty lists *)
 let mk_exists (vars : var list) formula =
   if List.is_empty vars then formula else Exists (vars, formula)
 ;;
@@ -126,7 +117,6 @@ let to_string ?(annotate = false) t =
   go t
 ;;
 
-(* Smart constructors for lists *)
 let mk_and_list formulas =
   match List.filter ~f:(fun x -> not (phys_equal x True)) formulas with
   | [] -> True
@@ -186,9 +176,6 @@ let is_const_input name = String.is_prefix ~prefix:"I" name
 let is_aux name = String.is_prefix ~prefix:"choice" name
 let is_b name = String.is_prefix ~prefix:"B" name
 
-(* Analysis functions *)
-
-(* Compute free variables (variables not bound by quantifiers) *)
 let rec free_vars t =
   match t with
   | True | False -> []
@@ -210,7 +197,6 @@ let rec free_vars t =
     List.filter ~f:(fun v -> not (List.mem bound v ~equal:phys_equal)) (free_vars f)
 ;;
 
-(* Compute bound variables (variables bound by quantifiers) *)
 let rec bound_vars t =
   match t with
   | True | False | Var _ | Fun _ -> []
@@ -227,7 +213,6 @@ let rec bound_vars t =
   | ForallOtherThan (vars, otherthan, f) -> vars @ otherthan @ bound_vars f
 ;;
 
-(* Compute operator size (number of operators in the formula tree) *)
 let rec opsize t =
   match t with
   | True | False | Var _ -> 0
@@ -244,7 +229,6 @@ let rec opsize t =
   | Exists (_, f) | Forall (_, f) | ForallOtherThan (_, _, f) -> 1 + opsize f
 ;;
 
-(* Check if formula is quantifier-free *)
 let rec is_qfree t =
   match t with
   | True | False | Var _ -> true
@@ -261,7 +245,6 @@ let rec is_qfree t =
   | Exists _ | Forall _ | ForallOtherThan _ -> false
 ;;
 
-(* Check if formula is universal (only ∀ quantifiers, no ∃) *)
 let rec is_universal t =
   match t with
   | True | False | Var _ -> true
@@ -279,8 +262,6 @@ let rec is_universal t =
   | Forall (_, f) -> is_universal f
 ;;
 
-(* Check if formula is in Bernays-Schönfinkel class *)
-(* BS class: universal prefix followed by quantifier-free matrix *)
 let is_bs t =
   let rec has_existential_prefix f =
     match f with

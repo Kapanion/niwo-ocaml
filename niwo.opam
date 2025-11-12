@@ -1,8 +1,8 @@
 opam-version: "2.0"
-name: "niwo-ocaml"
+name: "niwo"
 version: "0.1.0"
-synopsis: "NIWO2 implementation in OCaml"
-description: "A project to implement the NIWO2 tool in OCaml."
+synopsis: "NIWO implementation in OCaml"
+description: "A project to implement the NIWO tool in OCaml."
 depends: [
   "ocaml" {>= "4.14.0"}
   "dune" {>= "3.7"}

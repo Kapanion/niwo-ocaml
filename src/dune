@@ -1,4 +1,5 @@
 (library
+ (public_name niwo)
  (name niwo)
  (modules niwo formula formula_parser)
  (libraries core angstrom)

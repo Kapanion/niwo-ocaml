@@ -2,18 +2,19 @@ open! Core
 open Angstrom
 open Formula
 
-(* Whitespace handling *)
+(* Skip whitespace (spaces, tabs and newlines). *)
 let whitespace =
   skip_while (function
     | ' ' | '\t' | '\n' | '\r' -> true
     | _ -> false)
 ;;
 
+(* Token combinators that consume trailing whitespace. *)
 let token p = p <* whitespace
 let parens p = token (char '(') *> p <* token (char ')')
 let symbol s = token (string s)
 
-(* Identifiers *)
+(* Identifier helpers. *)
 let is_alpha = function
   | 'a' .. 'z' | 'A' .. 'Z' -> true
   | _ -> false
@@ -24,15 +25,17 @@ let is_alphanum = function
   | _ -> false
 ;;
 
+(* Parse an identifier (alpha followed by alphanumerics). *)
 let ident : string Angstrom.t =
   lift2 (fun c s -> String.make 1 c ^ s) (satisfy is_alpha) (take_while is_alphanum)
   >>= fun s -> whitespace *> return s
 ;;
 
-(* Variables *)
-(* var is not used anywhere in code, but the parser needs it, so we suppress the warning. *)
+(* Variable parsers. The `var` parser is only used locally by the parsing
+  combinators; the warning about unused values is suppressed. *)
 let var : var Angstrom.t = ident >>= fun name -> return (mk_var name) [@@warning "-32"]
 
+(* Parse an optionally-typed variable: `x` or `x:T`. *)
 let typed_var : var Angstrom.t =
   ident
   >>= fun name ->
@@ -44,9 +47,13 @@ let typed_var : var Angstrom.t =
 ;;
 
 (* Parameters tuple *)
+(* Parse a parenthesized tuple of typed variables: `(x, y:T, ...)`. *)
 let tuple : var list Angstrom.t = parens (sep_by (token (char ',')) typed_var)
 
 (* Function application *)
+
+(* Parse a function application: `f(x,y)` or `f#i(x,y)` for indexed
+    functions. *)
 let fun_term : Formula.t Angstrom.t =
   ident
   >>= fun name ->
@@ -60,19 +67,23 @@ let fun_term : Formula.t Angstrom.t =
 ;;
 
 (* Forward declaration for recursive parser *)
+(* Forward declaration for recursive parser. *)
 let term : Formula.t Angstrom.t ref = ref (fail "term not initialized")
 
-(* Boolean constants *)
+(* Boolean constants parsers. *)
 let true_lit = symbol "True" *> return True
 let false_lit = symbol "False" *> return False
 
 (* Equality *)
+
+(* Parse equality between variables, e.g. `x = y`. *)
 let equal : t Angstrom.t =
   typed_var
   >>= fun v1 ->
   token (char '=') *> typed_var >>= fun v2 -> return (Equal (Var v1, Var v2))
 ;;
 
+(* Parse inequality using either `≠` or `!=`. *)
 let not_equal : t Angstrom.t =
   typed_var
   >>= fun v1 ->
@@ -88,6 +99,7 @@ let simple_term : t Angstrom.t =
 ;;
 
 (* Helper for left-associative binary operators *)
+(* Helper for left-associative binary operators. *)
 let chainl1 p op =
   let rec go acc = lift2 (fun f x -> f acc x) op p >>= go <|> return acc in
   p >>= go
@@ -199,8 +211,10 @@ let () =
        equiv_level)
 ;;
 
+(* Parse a formula from a string, returning (Ok formula) or (Error e). *)
 let parse_formula s =
   parse_string ~consume:All !term s |> Result.map_error ~f:Error.of_string
 ;;
 
+(* Like [parse_formula] but raises on parse errors. *)
 let parse_formula_exn s = parse_formula s |> Or_error.ok_exn

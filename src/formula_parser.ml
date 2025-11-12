@@ -113,16 +113,32 @@ let () =
        *>
        (* Quantifiers - defined inside to use self recursively *)
        let exists =
-         token (string "∃") *> sep_by1 (token (char ',')) typed_var
+         (* Accept unicode ∃ or ascii \exists but ensure the keyword is not followed by alphanum
+        (to avoid matching identifiers like "\\existsx"). Require a '.' after the var list. *)
+         (string "∃" *> peek_char
+          >>= (function
+           | Some c when is_alphanum c -> fail "∃ followed by alphanumeric"
+           | _ -> whitespace *> return ())
+          <|> (string "\\exists" *> peek_char
+               >>= function
+               | Some c when is_alphanum c -> fail "\\exists followed by alphanumeric"
+               | _ -> whitespace *> return ()))
+         *> sep_by1 (token (char ',')) typed_var
          >>= fun vars ->
-         option () (token (char '.') >>| fun _ -> ()) *> self
-         >>= fun t -> return (mk_exists vars t)
+         (* Require a dot after the quantifier variable list. *)
+         token (char '.') *> self >>= fun t -> return (mk_exists vars t)
        in
        let forall =
-         token (string "∀") *> sep_by1 (token (char ',')) typed_var
-         >>= fun vars ->
-         option () (token (char '.') >>| fun _ -> ()) *> self
-         >>= fun t -> return (mk_forall vars t)
+         (string "∀" *> peek_char
+          >>= (function
+           | Some c when is_alphanum c -> fail "∀ followed by alphanumeric"
+           | _ -> whitespace *> return ())
+          <|> (string "\\forall" *> peek_char
+               >>= function
+               | Some c when is_alphanum c -> fail "\\forall followed by alphanumeric"
+               | _ -> whitespace *> return ()))
+         *> sep_by1 (token (char ',')) typed_var
+         >>= fun vars -> token (char '.') *> self >>= fun t -> return (mk_forall vars t)
        in
        let quantifier = exists <|> forall in
        (* Helper to parse single-letter operator followed by non-alphanumeric *)

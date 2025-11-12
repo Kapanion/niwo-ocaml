@@ -186,3 +186,68 @@ let%expect_test "parse_error_invalid_operator" =
   parse_formula "True & False" |> print_parse_result;
   [%expect {| Error: : end_of_input |}]
 ;;
+
+let%expect_test "parse_exists_ascii" =
+  parse_formula "\\exists x. P(x)" |> print_parse_result;
+  [%expect {| (Exists (((name x) (typ T))) (Fun P () (((name x) (typ T))))) |}]
+;;
+
+let%expect_test "parse_forall_ascii" =
+  parse_formula "\\forall x,y. (P(x) -> Q(y))" |> print_parse_result;
+  [%expect
+    {|
+    (Forall (((name x) (typ T)) ((name y) (typ T)))
+     (Implies (Fun P () (((name x) (typ T)))) (Fun Q () (((name y) (typ T))))))
+    |}]
+;;
+
+let%expect_test "parse_exists_typed_ascii" =
+  parse_formula "\\exists x:T. P(x:T)" |> print_parse_result;
+  [%expect {| (Exists (((name x) (typ T))) (Fun P () (((name x) (typ T))))) |}]
+;;
+
+let%expect_test "parse_forall_typed_ascii" =
+  parse_formula "\\forall x:T,y:T. (P(x:T) -> Q(y:T))" |> print_parse_result;
+  [%expect
+    {|
+    (Forall (((name x) (typ T)) ((name y) (typ T)))
+     (Implies (Fun P () (((name x) (typ T)))) (Fun Q () (((name y) (typ T))))))
+    |}]
+;;
+
+let%expect_test "parse_mixed_quantifiers_ascii_and_unicode" =
+  parse_formula "\\forall x. ∃ y. (P(x,y) && Q(y))" |> print_parse_result;
+  [%expect
+    {|
+    (Forall (((name x) (typ T)))
+     (Exists (((name y) (typ T)))
+      (And (Fun P () (((name x) (typ T)) ((name y) (typ T))))
+       (Fun Q () (((name y) (typ T)))))))
+    |}]
+;;
+
+(* Negative tests: malformed ascii quantifiers should fail to parse. *)
+let%expect_test "parse_exists_ascii_no_keyword_space" =
+  parse_formula "\\existsx. P(x)" |> print_parse_result;
+  [%expect {| Error: : no more choices |}]
+;;
+
+let%expect_test "parse_forall_ascii_missing_dot" =
+  parse_formula "\\forall x P(x)" |> print_parse_result;
+  [%expect {| Error: : no more choices |}]
+;;
+
+let%expect_test "parse_exists_ascii_missing_var" =
+  parse_formula "\\exists . P(x)" |> print_parse_result;
+  [%expect {| Error: : no more choices |}]
+;;
+
+let%expect_test "parse_forall_ascii_misspelled" =
+  parse_formula "\\foral x. P(x)" |> print_parse_result;
+  [%expect {| Error: : no more choices |}]
+;;
+
+let%expect_test "parse_exists_ascii_with_numbered_keyword" =
+  parse_formula "\\exists1 x. P(x)" |> print_parse_result;
+  [%expect {| Error: : no more choices |}]
+;;

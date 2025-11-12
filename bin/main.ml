@@ -25,6 +25,8 @@ let () =
        Printf.printf "%s\n" (Niwo.Formula.to_string formula);
        Printf.printf "\n--- With Types ---\n";
        Printf.printf "%s\n" (Niwo.Formula.to_string ~annotate:true formula);
+       Printf.printf "\n--- S-expression ---\n";
+       Printf.printf "%s\n" (Niwo.Formula.sexp_of_t formula |> Sexp.to_string_hum);
        Printf.printf "\n--- Analysis ---\n";
        Printf.printf
          "Free vars: %s\n"

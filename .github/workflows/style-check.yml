@@ -1,0 +1,28 @@
+name: Style Check
+
+on:
+  pull_request:
+    paths:
+      - '**.ml'
+
+jobs:
+  check-open-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for 'open Core' in all .ml files
+        run: |
+          failed=0
+          for file in $(find . -name "*.ml" -not -path "./_build/*"); do
+            if ! grep -q "^open! Core$\|^open Core$" "$file"; then
+              echo "::error file=$file::Missing 'open Core' or 'open! Core' at top of file"
+              failed=1
+            fi
+          done
+          if [ $failed -eq 1 ]; then
+            echo ""
+            echo "All .ml files must have 'open Core' or 'open! Core' at the top"
+            exit 1
+          fi
+          echo "✓ All .ml files have 'open Core' declaration"

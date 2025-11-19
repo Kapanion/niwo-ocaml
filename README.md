@@ -1,10 +1,10 @@
 # niwo-ocaml
 
-NIWO2 implementation in OCaml.
+NIWO implementation in OCaml.
 
 ## Description
 
-This project implements the NIWO2 tool in OCaml, starting with basic functionality to read and process transition system files.
+This project implements the NIWO tool in OCaml, starting with basic functionality to read and process transition system files.
 
 ## Setup
 
@@ -15,13 +15,15 @@ This project implements the NIWO2 tool in OCaml, starting with basic functionali
 
 ## Usage
 
-To run the tool:
+_To be specified soon..._
 
-```
-dune exec bin/main.exe <transition_system_file>
-```
+## Documentation
 
-The tool will output the number of lines in the specified file.
+To generate and view the API documentation (odoc):
+
+1. Run `dune build` to build the project.
+2. Run `dune build @doc` to generate the documentation.
+3. Run `open _build/default/_doc/_html/index.html` to view the documentation in browser.
 
 ## Development
 

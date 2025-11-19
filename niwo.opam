@@ -1,0 +1,12 @@
+opam-version: "2.0"
+name: "niwo"
+version: "0.1.0"
+synopsis: "NIWO implementation in OCaml"
+description: "A project to implement the NIWO tool in OCaml."
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.7"}
+  "core"
+  "ppx_expect" {with-test}
+  "angstrom" {>= "0.15.0"}
+]

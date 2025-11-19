@@ -1,0 +1,53 @@
+name: Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**.ml'
+      - '**.mli'
+      - '.ocamlformat'
+
+jobs:
+  format:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 5.1.x
+          opam-depext: false
+          opam-disable-sandboxing: true
+      
+      - name: Install OCamlformat
+        run: |
+          eval $(opam env)
+          opam install ocamlformat -y
+      
+      - name: Check .ocamlformat exists
+        run: |
+          if [ ! -f .ocamlformat ]; then
+            echo "::error::.ocamlformat file not found"
+            exit 1
+          fi
+          if ! grep -q "profile = janestreet" .ocamlformat; then
+            echo "::error::.ocamlformat must contain 'profile = janestreet'"
+            exit 1
+          fi
+      
+      - name: Check formatting
+        run: |
+          eval $(opam env)
+          find . -type f \( -name "*.ml" -o -name "*.mli" \) \
+            -not -path "./_opam/*" \
+            -not -path "./_build/*" \
+            -not -path "./.*" | \
+            xargs ocamlformat --check --profile=janestreet
+      
+      - name: Formatting issues found
+        if: failure()
+        run: |
+          echo "::error::Code is not formatted with ocamlformat (janestreet profile)"
+          echo "To fix, run:"
+          echo "  find . -type f \( -name '*.ml' -o -name '*.mli' \) -not -path './_opam/*' -not -path './_build/*' | xargs ocamlformat --inplace --profile=janestreet"

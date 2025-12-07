@@ -6,6 +6,7 @@ on:
       - '**.ml'
       - '**.mli'
       - '.ocamlformat'
+  workflow_dispatch:
 
 jobs:
   format:

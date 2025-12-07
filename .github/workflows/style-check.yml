@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - '**.ml'
+  workflow_dispatch:
 
 jobs:
   check-open-core:
